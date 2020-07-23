@@ -3,6 +3,50 @@ FROM ruby:alpine
 RUN apk update && apk add --no-cache \
   git
 
+
+ENV GITHUB_GEM_VERSION 202
+ENV JSON_GEM_VERSION 1.8.6
+
+RUN apk --update add --virtual build_deps \
+    build-base ruby-dev libc-dev linux-headers \
+  && gem install --verbose --no-document \
+    json:${JSON_GEM_VERSION} \
+    github-pages:${GITHUB_GEM_VERSION} \
+    jekyll-github-metadata \
+    minitest \
+  && apk del build_deps \
+  && apk add git \
+  && rm -rf /usr/lib/ruby/gems/*/cache/*.gem
+
+RUN apk upgrade --update \
+ && apk add --no-cache libatomic readline readline-dev libxml2 libxml2-dev alpine-sdk vim bash sudo su-exec \
+        ncurses-terminfo-base ncurses-terminfo \
+        libxslt libxslt-dev zlib-dev zlib \
+        ruby ruby-dev yaml yaml-dev \
+        libffi-dev build-base git nodejs \
+        ruby-io-console ruby-irb ruby-json ruby-rake \
+ && gem install --no-document minimal-mistakes-jekyll  redcarpet kramdown maruku rdiscount RedCloth liquid pygments.rb \
+ && gem install --no-document sass safe_yaml \
+ && gem install --no-document jekyll -v 2.5 \
+ && gem install --no-document jekyll-paginate jekyll-sass-converter \
+ && gem install --no-document jekyll-sitemap jekyll-feed jekyll-redirect-from jekyll-include-cache \
+ && rm -rf /root/src /tmp/* /usr/share/man /var/cache/apk/* \
+ #&& apk del build-base zlib-dev ruby-dev readline-dev \
+ #           yaml-dev libffi-dev libxml2-dev \
+ && apk search --update
+
+RUN gem install --no-document jekyll-sitemap jekyll-feed jekyll-redirect-from \
+jekyll-include-cache zeitwerk activesupport json algolia_html_extractor algoliasearch \
+httpclient filesize listen rough kramdown
+
+RUN gem update rails && gem update --system
+#RUN gem uninstall ffi && gem install ffi --platform=ruby
+
+
+
+
+
+
 COPY . /src/gh/pages-gem
 
 # one step to exclude .build_deps from docker cache
