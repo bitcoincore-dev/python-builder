@@ -59,6 +59,7 @@ RUN gem install --no-document algoliasearch
 #RUN gem install --no-document jekyll-avatar:0.6.0
 RUN gem install --no-document jekyll-avatar:0.7.0
 RUN gem install --no-document jekyll-coffeescript:1.1.1
+#RUN gem install --no-document jekyll-commonmark
 RUN gem install --no-document jekyll-commonmark-ghpages:0.1.6
 RUN gem install --no-document jekyll-default-layout:0.1.4
 #RUN gem install --no-document jekyll-feed:0.11.0
@@ -142,8 +143,8 @@ RUN gem install --no-document filesize
 
 FROM install as copy
 
-COPY ./docs /src/gh/pages-gem
-#COPY . /src/gh/pages-gem
+#COPY ./docs /src/gh/pages-gem
+COPY . /src/gh/pages-gem
 
 FROM copy as cleanup
 
@@ -165,5 +166,6 @@ WORKDIR /src/site
 
 CMD ["bundle","install","--user" ,"--system"]
 CMD ["bundle","install"]
-CMD ["bundle","exec","jekyll", "serve", "-H", "0.0.0.0", "-P", "4000"]
+CMD ["bundle", "exec", "jekyll", "build", "--profile"]
+CMD ["bundle","exec","jekyll", "serve","incremental" ,"-H", "0.0.0.0", "-P", "4000"]
 
