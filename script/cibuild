@@ -5,11 +5,6 @@ set -e
 
 echo "Jekyll version: $(bundle exec jekyll --version)"
 
-echo "Running Ruby tests..."
-bundle exec rspec --format documentation
+echo "SITE=./docs make image"
+SITE=./docs make image
 
-echo "Running Ruby style tests..."
-script/fmt --display-style-guide
-
-echo "Building the default site..."
-script/test-site

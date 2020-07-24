@@ -2,7 +2,7 @@
 
 source "https://rubygems.org"
 
-gemspec
+gem "github-pages", group: :jekyll_plugins
 
 # Whitelisted plugins not included in runtime dependencies.
 gem "jekyll"
