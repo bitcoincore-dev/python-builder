@@ -13,7 +13,9 @@ shell:
 	${DOCKER} run --rm -it \
 		-p 4000:4000 \
 		-u `id -u`:`id -g` \
-		-v ${PWD}:/src/gh/pages-gem \
+		-v ${PWD}/docs:/src/gh/pages-gem \
+		-v `realpath ${SITE}`:/src/site \
+		-w /src/site \
 		${TAG} \
 		/bin/bash
 
@@ -26,7 +28,7 @@ server:
 	${DOCKER} run --rm -it \
 		-p 4000:4000 \
 		-u `id -u`:`id -g` \
-		-v ${PWD}:/src/gh/pages-gem \
+		-v ${PWD}/docs:/src/gh/pages-gem \
 		-v `realpath ${SITE}`:/src/site \
 		-w /src/site \
 		${TAG}

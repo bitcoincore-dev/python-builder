@@ -1,66 +1,169 @@
-FROM ruby:alpine
-
-RUN apk update && apk add --no-cache \
-  git
-
-
-ENV GITHUB_GEM_VERSION 202
-ENV JSON_GEM_VERSION 1.8.6
-
-RUN apk --update add --virtual build_deps \
-    build-base ruby-dev libc-dev linux-headers \
-  && gem install --verbose --no-document \
-    json:${JSON_GEM_VERSION} \
-    github-pages:${GITHUB_GEM_VERSION} \
-    jekyll-github-metadata \
-    minitest \
-  && apk del build_deps \
-  && apk add git \
-  && rm -rf /usr/lib/ruby/gems/*/cache/*.gem
-
-RUN apk upgrade --update \
- && apk add --no-cache libatomic readline readline-dev libxml2 libxml2-dev alpine-sdk vim bash sudo su-exec \
-        ncurses-terminfo-base ncurses-terminfo \
-        libxslt libxslt-dev zlib-dev zlib \
-        ruby ruby-dev yaml yaml-dev \
-        libffi-dev build-base git nodejs \
-        ruby-io-console ruby-irb ruby-json ruby-rake \
- && gem install --no-document minimal-mistakes-jekyll  redcarpet kramdown maruku rdiscount RedCloth liquid pygments.rb \
- && gem install --no-document sass safe_yaml \
- && gem install --no-document jekyll -v 2.5 \
- && gem install --no-document jekyll-paginate jekyll-sass-converter \
- && gem install --no-document jekyll-sitemap jekyll-feed jekyll-redirect-from jekyll-include-cache \
- && rm -rf /root/src /tmp/* /usr/share/man /var/cache/apk/* \
- #&& apk del build-base zlib-dev ruby-dev readline-dev \
- #           yaml-dev libffi-dev libxml2-dev \
- && apk search --update
-
-RUN gem install --no-document jekyll-sitemap jekyll-feed jekyll-redirect-from \
-jekyll-include-cache zeitwerk activesupport json algolia_html_extractor algoliasearch \
-httpclient filesize listen rough kramdown
-
-RUN gem update rails && gem update --system
-#RUN gem uninstall ffi && gem install ffi --platform=ruby
-
-
-
-
-
-
-COPY . /src/gh/pages-gem
-
-# one step to exclude .build_deps from docker cache
-RUN apk update && apk add --no-cache --virtual .build_deps \
-    make \
-    build-base && \
-  bundle config local.github-pages /src/gh/pages-gem && \
-  bundle install --gemfile=/src/gh/pages-gem/Gemfile && \
-  apk del .build_deps
+FROM ruby:alpine as base
 
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US.UTF-8
 ENV LC_ALL en_US.UTF-8
 
+RUN apk --update add --virtual build_deps build-base ruby-dev libc-dev linux-headers
+RUN apk upgrade --update && apk add --no-cache git vim alpine-sdk build-base libc-dev linux-headers \
+bash bash-completion sudo su-exec libatomic readline readline-dev \
+libxml2 libxml2-dev ncurses-terminfo-base ncurses-terminfo \
+libxslt libxslt-dev zlib-dev zlib
+
+RUN apk add --no-cache ruby ruby-dev yaml yaml-dev \
+libffi-dev nodejs ruby-io-console ruby-irb ruby-json ruby-rake
+
+RUN apk add --update ruby-nokogiri
+
+#RUN gem install ruby-nokogiri:1.10.9 -- --use-system-libraries
+RUN apk add --update ruby-dev build-base \
+  libxml2-dev libxslt-dev pcre-dev libffi-dev \
+  mariadb-dev postgresql-dev
+#REF: https://pages.github.com/versions/
+#REF: https://github.com/github/opensource.guide/blob/34b3b5493594526a4b756712847ff567b8d5adc9/Gemfile.lock
+ENV JSON_GEM_VERSION 1.8.6
+RUN gem install --verbose --no-document json:${JSON_GEM_VERSION}
+ENV JSON_GEM_VERSION 2.3.1
+RUN gem install --verbose --no-document json:${JSON_GEM_VERSION}
+
+ENV GITHUB_GEM_VERSION 202
+RUN gem install --verbose --no-document github-pages:${GITHUB_GEM_VERSION}
+ENV GITHUB_GEM_VERSION 206
+RUN gem install --verbose --no-document github-pages:${GITHUB_GEM_VERSION}
+
+RUN gem install --no-document github-pages-health-check:1.16.1
+
+ENV OCTOKIT_VERSION 4.15.0
+RUN gem install --no-document octokit:${OCTOKIT_VERSION}
+
+ENV FARADAY_VERSION 0.17.3
+RUN gem install --no-document faraday:${FARADAY_VERSION}
+RUN gem install --no-document faraday-http-cache:2.2.0
+
+
+FROM base as install
+#REF: https://pages.github.com/versions/
+
+ENV JEKYLL_VERSION 3.8.7
+RUN gem install --no-document jekyll:${JEKYLL_VERSION}
+RUN gem install --no-document minimal-mistakes-jekyll
+
+ENV HTML_PIPELINE_VERSION 2.8.0
+#ENV HTML_PIPELINE_VERSION 2.12.3
+#REF:https://github.com/jch/html-pipeline#dependencies
+RUN gem install --no-document html-pipeline:${HTML_PIPELINE_VERSION}
+
+RUN gem install --no-document jekyll-algolia
+RUN gem install --no-document algolia_html_extractor
+RUN gem install --no-document algoliasearch
+#RUN gem install --no-document jekyll-avatar:0.6.0
+RUN gem install --no-document jekyll-avatar:0.7.0
+RUN gem install --no-document jekyll-coffeescript:1.1.1
+RUN gem install --no-document jekyll-commonmark-ghpages:0.1.6
+RUN gem install --no-document jekyll-default-layout:0.1.4
+#RUN gem install --no-document jekyll-feed:0.11.0
+#RUN gem install --no-document jekyll-feed:0.12.0
+ENV JEKYLL_FEED_VERSION 0.13.0
+RUN gem install --no-document jekyll-feed:${JEKYLL_FEED_VERSION}
+RUN gem install --no-document jekyll-gist:1.5.0
+#REF:https://github.com/jekyll/github-metadata/releases/tag/v2.9.4
+ENV JEKYLL_GITHUB_METADATA 2.12.1
+RUN gem install --no-document jekyll-github-metadata:${JEKYLL_GITHUB_METADATA}
+RUN gem install --no-document jekyll-include-cache
+RUN gem install --no-document jekyll-mentions:1.5.1
+RUN gem install --no-document jekyll-optional-front-matter:0.3.2
+RUN gem install --no-document jekyll-paginate:1.1.0
+RUN gem install --no-document jekyll-readme-index:0.3.0
+RUN gem install --no-document jekyll-redirect-from:0.15.0
+RUN gem install --no-document jekyll-relative-links:0.6.1
+RUN gem install --no-document jekyll-remote-theme:0.4.1
+RUN gem install --no-document jekyll-sass-converter:1.5.2
+RUN gem install --no-document jekyll-seo-tag:2.6.1
+RUN gem install --no-document jekyll-sitemap:1.4.0
+RUN gem install --no-document jekyll-swiss:1.0.0
+#RUN gem install --no-document jekyll-theme-architect:0.1.1
+#RUN gem install --no-document jekyll-theme-cayman:0.1.1
+RUN gem install --no-document jekyll-theme-cayman
+#RUN gem install --no-document jekyll-theme-dinky:0.1.1
+#RUN gem install --no-document jekyll-theme-hacker:0.1.1
+#RUN gem install --no-document jekyll-theme-leap-day:0.1.1
+#RUN gem install --no-document jekyll-theme-merlot:0.1.1
+#RUN gem install --no-document jekyll-theme-midnight:0.1.1
+RUN gem install --no-document jekyll-theme-minimal:0.1.1
+#RUN gem install --no-document jekyll-theme-modernist:0.1.1
+#RUN gem install --no-document jekyll-theme-primer:0.5.4
+#RUN gem install --no-document jekyll-theme-slate:0.1.1
+#RUN gem install --no-document jekyll-theme-tactile:0.1.1
+#RUN gem install --no-document jekyll-theme-time-machine:0.1.1
+RUN gem install --no-document jekyll-titles-from-headings:0.5.3
+RUN gem install --no-document jemoji:0.11.1
+RUN gem install --no-document kramdown:1.17.0
+RUN gem install --no-document liquid:4.0.3
+RUN gem install --no-document minima:2.5.1
+RUN gem install --no-document nokogiri:1.10.9
+
+ENV ROUGE_GEM_VERSION 3.19.0
+RUN gem install --no-document rouge:${ROUGE_GEM_VERSION}
+
+#RUN gem install --no-document ruby:2.7.1
+
+RUN gem install --no-document safe_yaml:1.0.5
+RUN gem install --no-document sass:3.7.4
+#RUN gem install --no-document sassc
+
+#Some additional stuff
+RUN gem install --no-document listen:3.1.5
+RUN gem install --no-document tzinfo-data:1.2020.1
+
+#RUN gem install --no-document elasticsearch:7.5.0.pre.pre
+RUN gem install --no-document elasticsearch:7.5.0
+RUN gem install --no-document fluent-plugin-elasticsearch
+
+RUN gem install --no-document redcarpet
+RUN gem install --no-document maruku
+RUN gem install --no-document rdiscount
+RUN gem install --no-document RedCloth
+RUN gem install --no-document liquid:4.0.0
+RUN gem install --no-document pygments.rb
+RUN gem install --no-document minitest
+RUN gem install --no-document zeitwerk
+RUN gem install --no-document activesupport:4.2.11.1
+#RUN gem install --no-document json
+RUN gem install --no-document httpclient
+RUN gem install --no-document filesize
+
+#Additional gems
+#RUN gem install --no-document 
+
+#RUN gem update rails && gem update --system
+#RUN gem uninstall ffi && gem install ffi --platform=ruby
+
+#RUN gem update github-pages
+
+FROM install as copy
+
+COPY ./docs /src/gh/pages-gem
+#COPY . /src/gh/pages-gem
+
+FROM copy as cleanup
+
+# one step to exclude .build_deps from docker cache
+RUN apk update && apk add --no-cache --virtual .build_deps \
+    make \
+    build-base && \
+    bundle config local.github-pages /src/gh/pages-gem && \
+    bundle install --gemfile=/src/gh/pages-gem/Gemfile
+
+#RUN rm -rf /usr/lib/ruby/gems/*/cache/*.gem
+#RUN rm -rf /root/src /tmp/* /usr/share/man /var/cache/apk/*
+#RUN apk del build-base zlib-dev ruby-dev readline-dev yaml-dev libffi-dev libxml2-dev
+RUN apk search --update
+
+FROM cleanup as done
+
 WORKDIR /src/site
 
-CMD ["jekyll", "serve", "-H", "0.0.0.0", "-P", "4000"]
+CMD ["bundle","install","--user" ,"--system"]
+CMD ["bundle","install"]
+CMD ["bundle","exec","jekyll", "serve", "-H", "0.0.0.0", "-P", "4000"]
+
