@@ -1,9 +1,9 @@
 ---
+layout: home
+author_profile: false
 permalink: /about/
-title: ""
+title: "Quick Usage"
 ---
-
-# Quick Usage
 
 ```
 Install docker

@@ -1,6 +1,6 @@
 ---
-layout: home
-author_profile: true
+permalink: /theme/
+title: "Theme"
 ---
 
 <html>
@@ -9,9 +9,9 @@ author_profile: true
 </head>
 </html>
 
-# Minimal Mistakes remote theme starter
+# Pages-Gem remote theme starter
 
-Click [**Use this template**](https://github.com/mmistakes/mm-github-pages-starter/generate) button above for the quickest method of getting started with the [Minimal Mistakes Jekyll theme](https://github.com/mmistakes/minimal-mistakes).
+Click [**Use this template**](https://github.com/randymcmillan/pages-gem-starter/generate) button above for the quickest method of getting started with the [Minimal Mistakes Jekyll theme](https://github.com/mmistakes/minimal-mistakes).
 
 Contains basic configuration to get you a site with:
 
