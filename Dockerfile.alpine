@@ -47,7 +47,6 @@ FROM base as install
 ENV JEKYLL_VERSION 3.8.7
 RUN gem install --no-document jekyll:${JEKYLL_VERSION}
 RUN gem install --no-document minimal-mistakes-jekyll
-
 ENV HTML_PIPELINE_VERSION 2.8.0
 #ENV HTML_PIPELINE_VERSION 2.12.3
 #REF:https://github.com/jch/html-pipeline#dependencies
@@ -133,13 +132,19 @@ RUN gem install --no-document activesupport:4.2.11.1
 RUN gem install --no-document httpclient
 RUN gem install --no-document filesize
 
-#Additional gems
-#RUN gem install --no-document 
+#Additional gems - Insert updated versions
+RUN gem install --no-document concurrent-ruby:1.1.6
+RUN gem install --no-document dnsruby:1.61.3
+RUN gem install --no-document html-pipeline:2.13.0
+RUN gem install --no-document octicons:10.0.0
+RUN gem install --no-document jekyll-octicons:10.0.0
+RUN gem install --no-document minimal-mistakes-jekyll:4.19.3
 
-#RUN gem update rails && gem update --system
-#RUN gem uninstall ffi && gem install ffi --platform=ruby
-
-#RUN gem update github-pages
+#RUN gem install --no-document :
+#RUN gem install --no-document :
+#RUN gem install --no-document :
+#RUN gem install --no-document :
+#RUN gem install --no-document :
 
 FROM install as copy
 

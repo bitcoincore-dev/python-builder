@@ -1,7 +1,2 @@
-*.gem
-*.lock
-.bundle
-.sass-cache
-CNAME
-test-site/
-.jekyll-cache
+_site
+Gemfile.lock

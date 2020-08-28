@@ -1,6 +1,18 @@
 DOCKER=docker
-
 TAG=gh-pages
+
+ifeq ($(SITE),)
+    SITE   := docs
+    export SITE
+else
+    SITE   ?= $(SITE)
+    export SITE
+endif
+
+
+
+.PHONY:
+	image image_alpine server shell
 
 # Build the docker image
 image:
@@ -22,7 +34,7 @@ shell:
 # Spawn a server. Specify the path to the SITE directory by
 # exposing it using `expose SITE="../path-to-jekyll-site"` prior to calling or
 # by prepending it to the make rule e.g.: `SITE=../path-to-site make server`
-server:
+server: image
 	test -d "${SITE}" || \
 		(echo -E "specify SITE e.g.: SITE=/path/to/site make server"; exit 1) && \
 	${DOCKER} run --rm -it \
@@ -32,6 +44,7 @@ server:
 		-v `realpath ${SITE}`:/src/site \
 		-w /src/site \
 		${TAG}
-
-.PHONY:
-	image image_alpine server shell
+#######################
+prune:
+	docker system prune -af
+#######################
