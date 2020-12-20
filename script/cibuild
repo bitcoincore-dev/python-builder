@@ -6,7 +6,13 @@ set -e
 echo "Jekyll version: $(bundle exec jekyll --version)"
 
 echo "SITE=./docs make image"
-#SITE=./docs make image
-echo "make image"
- make image
+SITE=./docs make image
 
+echo "SITE=./Bitcoin.org make image"
+SITE=./Bitcoin.org make image
+
+echo "SITE=./developer.bitcoin.org make image"
+SITE=./developer.bitcoin.org make image
+
+echo "SITE=./.bitcoincore.org make image"
+SITE=./bitcoincore.org make image
