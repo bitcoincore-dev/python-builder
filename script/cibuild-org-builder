@@ -1,0 +1,5 @@
+#!/bin/sh
+set -e
+SITE=. make image
+SITE=. make server
+
