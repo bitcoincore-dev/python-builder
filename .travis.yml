@@ -24,6 +24,7 @@ before_install:
 script: "script/cibuild"
 
 notifications:
-  email: false
+  email:
+    - admin@bitcoincore.dev
 
 cache: bundler
