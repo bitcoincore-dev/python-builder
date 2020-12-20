@@ -1,4 +1,6 @@
-FROM ruby:alpine as base
+ARG RUBY_VERSION=2.5
+ARG ALPINE_VERSION=alpine3.12
+FROM ruby:${RUBY_VERSION}-${ALPINE_VERSION} as base
 
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US.UTF-8
@@ -13,6 +15,7 @@ libxslt libxslt-dev zlib-dev zlib
 RUN apk add --no-cache ruby ruby-dev yaml yaml-dev \
 libffi-dev nodejs ruby-io-console ruby-irb ruby-json ruby-rake
 
+
 RUN apk add --update ruby-nokogiri
 
 #RUN gem install ruby-nokogiri:1.10.9 -- --use-system-libraries
@@ -21,6 +24,7 @@ RUN apk add --update ruby-dev build-base \
   mariadb-dev postgresql-dev
 #REF: https://pages.github.com/versions/
 #REF: https://github.com/github/opensource.guide/blob/34b3b5493594526a4b756712847ff567b8d5adc9/Gemfile.lock
+RUN gem sources --add https://rubygems.org/
 ENV JSON_GEM_VERSION 1.8.6
 RUN gem install --verbose --no-document json:${JSON_GEM_VERSION}
 ENV JSON_GEM_VERSION 2.3.1
@@ -46,7 +50,6 @@ FROM base as install
 
 ENV JEKYLL_VERSION 3.8.7
 RUN gem install --no-document jekyll:${JEKYLL_VERSION}
-RUN gem install --no-document minimal-mistakes-jekyll
 ENV HTML_PIPELINE_VERSION 2.8.0
 #ENV HTML_PIPELINE_VERSION 2.12.3
 #REF:https://github.com/jch/html-pipeline#dependencies
@@ -105,7 +108,6 @@ RUN gem install --no-document nokogiri:1.10.9
 ENV ROUGE_GEM_VERSION 3.19.0
 RUN gem install --no-document rouge:${ROUGE_GEM_VERSION}
 
-#RUN gem install --no-document ruby:2.7.1
 
 RUN gem install --no-document safe_yaml:1.0.5
 RUN gem install --no-document sass:3.7.4
@@ -140,8 +142,30 @@ RUN gem install --no-document octicons:10.0.0
 RUN gem install --no-document jekyll-octicons:10.0.0
 RUN gem install --no-document minimal-mistakes-jekyll:4.19.3
 
-#RUN gem install --no-document :
-#RUN gem install --no-document :
+RUN gem install --no-document rake:13.0.1
+RUN gem install --no-document public_suffix:4.0.5
+RUN gem install --no-document colored:1.2 
+RUN gem install --no-document commonjs:0.2.7
+RUN gem install --no-document em-websocket:0.5.1
+RUN gem install --no-document ffi:1.12.2
+RUN gem install --no-document ffi-icu:0.2.0
+RUN gem install --no-document parallel:1.19.1
+RUN gem install --no-document typhoeus:0.8.0
+RUN gem install --no-document yell:2.2.2
+RUN gem install --no-document html-proofer:2.1.0
+RUN gem install --no-document i18n:1.8.2 
+RUN gem install --no-document sassc:2.3.0
+RUN gem install --no-document jekyll-sass-converter:2.1.0
+RUN gem install --no-document listen:3.2.1
+RUN gem install --no-document jekyll:4.0.1
+RUN gem install --no-document multi_json:1.14.1
+RUN gem install --no-document jshintrb:0.3.0
+RUN gem install --no-document json:2.3.0
+RUN gem install --no-document json-schema:2.8.1
+RUN gem install --no-document kramdown:2.3
+RUN gem install --no-document less:2.4.0
+RUN gem install --no-document safe_yaml:1.0.5
+RUN gem install --no-document therubyracer:0.12.3
 #RUN gem install --no-document :
 #RUN gem install --no-document :
 #RUN gem install --no-document :
@@ -169,8 +193,8 @@ FROM cleanup as done
 
 WORKDIR /src/site
 
-CMD ["bundle","install","--user" ,"--system"]
-CMD ["bundle","install"]
-CMD ["bundle", "exec", "jekyll", "build", "--profile"]
-CMD ["bundle","exec","jekyll", "serve","incremental" ,"-H", "0.0.0.0", "-P", "4000"]
+#CMD ["bundle","install","--user" ,"--system"]
+CMD ["bundle","install","--verbose"]
+#CMD ["bundle", "exec", "jekyll", "build", "--profile"]
+CMD ["bundle", "exec","jekyll", "serve","--incremental","-H", "0.0.0.0", "-P", "4000","--verbose"]
 
