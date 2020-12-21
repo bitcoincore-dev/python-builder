@@ -35,7 +35,7 @@ jobs:
     after_install:
       - echo "shared after_install config"
     script: "script/cibuild-org-builder $(pwd) image"
-    deploy: "script/cibuild-org-builder $(pwd) server"
+    after_sucess: "script/cibuild-org-builder $(pwd) server"
 
   - name: cibuild-bitcoin-org
     <<: *clones

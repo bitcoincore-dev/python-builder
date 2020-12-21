@@ -1,5 +1,7 @@
 ARG RUBY_VERSION=2.5.8
 ARG ALPINE_VERSION=alpine3.12
+#ARG VERBOSE=--verbose
+ARG VERBOSE=        
 FROM ruby:${RUBY_VERSION}-${ALPINE_VERSION} as base
 
 ENV LANG en_US.UTF-8
@@ -26,23 +28,23 @@ RUN apk add --update ruby-dev build-base \
 #REF: https://github.com/github/opensource.guide/blob/34b3b5493594526a4b756712847ff567b8d5adc9/Gemfile.lock
 RUN gem sources --add https://rubygems.org/
 ENV JSON_GEM_VERSION 1.8.6
-RUN gem install --verbose --no-document json:${JSON_GEM_VERSION}
+RUN gem install ${VERBOSE} --no-document json:${JSON_GEM_VERSION}
 ENV JSON_GEM_VERSION 2.3.1
-RUN gem install --verbose --no-document json:${JSON_GEM_VERSION}
+RUN gem install ${VERBOSE} --no-document json:${JSON_GEM_VERSION}
 
 ENV GITHUB_GEM_VERSION 202
-RUN gem install --verbose --no-document github-pages:${GITHUB_GEM_VERSION}
+RUN gem install ${VERBOSE} --no-document github-pages:${GITHUB_GEM_VERSION}
 ENV GITHUB_GEM_VERSION 206
-RUN gem install --verbose --no-document github-pages:${GITHUB_GEM_VERSION}
+RUN gem install ${VERBOSE} --no-document github-pages:${GITHUB_GEM_VERSION}
 
-RUN gem install --no-document github-pages-health-check:1.16.1
+RUN gem install ${VERBOSE} --no-document github-pages-health-check:1.16.1
 
 ENV OCTOKIT_VERSION 4.15.0
-RUN gem install --no-document octokit:${OCTOKIT_VERSION}
+RUN gem install ${VERBOSE} --no-document octokit:${OCTOKIT_VERSION}
 
 ENV FARADAY_VERSION 0.17.3
-RUN gem install --no-document faraday:${FARADAY_VERSION}
-RUN gem install --no-document faraday-http-cache:2.2.0
+RUN gem install ${VERBOSE} --no-document faraday:${FARADAY_VERSION}
+RUN gem install ${VERBOSE} --no-document faraday-http-cache:2.2.0
 
 
 FROM base as install
@@ -55,6 +57,7 @@ ENV HTML_PIPELINE_VERSION 2.8.0
 #REF:https://github.com/jch/html-pipeline#dependencies
 RUN gem install --no-document html-pipeline:${HTML_PIPELINE_VERSION}
 
+RUN gem install --no-document sassc:2.3.0
 RUN gem install --no-document jekyll-algolia
 RUN gem install --no-document algolia_html_extractor
 RUN gem install --no-document algoliasearch
@@ -84,20 +87,20 @@ RUN gem install --no-document jekyll-sass-converter:1.5.2
 RUN gem install --no-document jekyll-seo-tag:2.6.1
 RUN gem install --no-document jekyll-sitemap:1.4.0
 RUN gem install --no-document jekyll-swiss:1.0.0
-#RUN gem install --no-document jekyll-theme-architect:0.1.1
-#RUN gem install --no-document jekyll-theme-cayman:0.1.1
-RUN gem install --no-document jekyll-theme-cayman
-#RUN gem install --no-document jekyll-theme-dinky:0.1.1
-#RUN gem install --no-document jekyll-theme-hacker:0.1.1
-#RUN gem install --no-document jekyll-theme-leap-day:0.1.1
-#RUN gem install --no-document jekyll-theme-merlot:0.1.1
-#RUN gem install --no-document jekyll-theme-midnight:0.1.1
-RUN gem install --no-document jekyll-theme-minimal:0.1.1
-#RUN gem install --no-document jekyll-theme-modernist:0.1.1
-#RUN gem install --no-document jekyll-theme-primer:0.5.4
-#RUN gem install --no-document jekyll-theme-slate:0.1.1
-#RUN gem install --no-document jekyll-theme-tactile:0.1.1
-#RUN gem install --no-document jekyll-theme-time-machine:0.1.1
+##RUN gem install --no-document jekyll-theme-architect:0.1.1
+##RUN gem install --no-document jekyll-theme-cayman:0.1.1
+#RUN gem install --no-document jekyll-theme-cayman
+##RUN gem install --no-document jekyll-theme-dinky:0.1.1
+##RUN gem install --no-document jekyll-theme-hacker:0.1.1
+##RUN gem install --no-document jekyll-theme-leap-day:0.1.1
+##RUN gem install --no-document jekyll-theme-merlot:0.1.1
+##RUN gem install --no-document jekyll-theme-midnight:0.1.1
+#RUN gem install --no-document jekyll-theme-minimal:0.1.1
+##RUN gem install --no-document jekyll-theme-modernist:0.1.1
+##RUN gem install --no-document jekyll-theme-primer:0.5.4
+##RUN gem install --no-document jekyll-theme-slate:0.1.1
+##RUN gem install --no-document jekyll-theme-tactile:0.1.1
+##RUN gem install --no-document jekyll-theme-time-machine:0.1.1
 RUN gem install --no-document jekyll-titles-from-headings:0.5.3
 RUN gem install --no-document jemoji:0.11.1
 RUN gem install --no-document kramdown:1.17.0
