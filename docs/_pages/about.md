@@ -10,7 +10,7 @@ title: "GitHub Pages Docker"
 </head>
 </html>
 
-[![Build Status](https://travis-ci.org/RandyMcMillan/pages-gem.svg?branch=master)](https://travis-ci.org/RandyMcMillan/pages-gem)
+[![Build Status](https://travis-ci.org/bitcoincore-dev/org-builder.svg?branch=master)](https://travis-ci.org/bitcoincore-dev/org-builder)
 
 
 ```
@@ -20,25 +20,15 @@ Install make
 then
 
 ```
-git clone https://github.com/RandyMcMillan/pages-gem.git
-cd pages-gem
-SITE=./docs make image
-SITE=./docs make server
+git clone https://github.com/bitcoincore-dev/org-builder.git
+cd org-builder
+
+make image
+OR
+SITE=. make image
+OR
+SITE=<path to jekyll project> make server
 ```
-
-# Templated theme:
-
-
-Click [<i class=""></i> **Create Theme**](https://github.com/randymcmillan/pages-gem-starter/generate){: .btn .btn--primary} for the quickest method of getting started with the [Minimal Mistakes Jekyll theme](https://github.com/mmistakes/minimal-mistakes){: .btn .btn--primary}.
-
-```
-Use the link above to create a new theme repo
-git clone https://github.com/<user-name>/<your-theme>.git
-cd <your-theme>
-SITE=~/<your-theme> make image
-SITE=~/<your-theme> make server
-```
-
 
 ## License
 
