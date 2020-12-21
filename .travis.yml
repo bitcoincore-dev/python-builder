@@ -34,26 +34,32 @@ jobs:
     <<: *shared_job
     after_install:
       - echo "shared after_install config"
-    script: "script/cibuild-org-builder"
+    script: "script/cibuild-org-builder $(pwd) image"
+    deploy: "script/cibuild-org-builder $(pwd) server"
 
   - name: cibuild-bitcoin-org
     <<: *clones
     <<: *shared_job
     after_install:
       - echo "shared after_install config"
-    script: "script/cibuild-bitcoin-org"
+    script: "script/cibuild-org-builder $(pwd)/Bitcoin.org image"
+    deploy: "script/cibuild-org-builder $(pwd)/Bitcoin.org server"
+
 
   - name: cibuild-developer-bitcoin-org
     <<: *clones
     <<: *shared_job
     after_install:
       - echo "shared after_install config"
-    script: "script/cibuild-developer-bitcoin-org"
+    script: "script/cibuild-org-builder $(pwd)/developer.bitcoin.org image"
+    deploy: "script/cibuild-org-builder $(pwd)/developer.bitcoin.org server"
+
 
   - name: cibuild-bitcoincore-org
     <<: *clones
     <<: *shared_job
     after_install:
       - echo "shared after_install config"
-    script: "script/cibuild-bitcoincore-org"
+    script: "script/cibuild-org-builder $(pwd)/bitcoincore.org image"
+    deploy: "script/cibuild-org-builder $(pwd)/bitcoincore.org server"
 

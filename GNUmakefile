@@ -2,7 +2,7 @@ DOCKER=docker
 TAG=gh-pages
 
 ifeq ($(SITE),)
-    SITE   := docs
+    SITE   := .
     export SITE
 else
     SITE   ?= $(SITE)
@@ -44,6 +44,13 @@ server: image
 		-v `realpath ${SITE}`:/src/site \
 		-w /src/site \
 		${TAG}
+	|| echo 'Image(s) for "gh-pages" already removed.'
+#######################
+clean:
+	@echo 'clean'
+	@docker-compose -p gh-pages down --remove-orphans --rmi all 2>/dev/null \
+	&& echo 'Image(s) for "gh-pages" removed.' \
+	|| echo 'Image(s) for "gh-pages" already removed.'
 #######################
 prune:
 	docker system prune -af

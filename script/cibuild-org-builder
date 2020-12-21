@@ -1,5 +1,4 @@
 #!/bin/sh
 set -e
-SITE=. make image
-SITE=. make server
+SITE=$1 make $2
 
