@@ -12,8 +12,6 @@ _shared_job: &shared_job
         - 2.6
     install:
       - echo "shared install config"
-      - gem update --system
-      - gem install bundler
     env:
       global:
       - NOKOGIRI_USE_SYSTEM_LIBRARIES=true
@@ -35,7 +33,6 @@ jobs:
     after_install:
       - echo "shared after_install config"
     script: "script/cibuild-org-builder $(pwd) image"
-    deploy: "script/cibuild-org-builder $(pwd) server"
 
   - name: cibuild-bitcoin-org
     <<: *clones
@@ -43,8 +40,6 @@ jobs:
     after_install:
       - echo "shared after_install config"
     script: "script/cibuild-org-builder $(pwd)/Bitcoin.org image"
-    deploy: "script/cibuild-org-builder $(pwd)/Bitcoin.org server"
-
 
   - name: cibuild-developer-bitcoin-org
     <<: *clones
@@ -52,8 +47,6 @@ jobs:
     after_install:
       - echo "shared after_install config"
     script: "script/cibuild-org-builder $(pwd)/developer.bitcoin.org image"
-    deploy: "script/cibuild-org-builder $(pwd)/developer.bitcoin.org server"
-
 
   - name: cibuild-bitcoincore-org
     <<: *clones
@@ -61,5 +54,4 @@ jobs:
     after_install:
       - echo "shared after_install config"
     script: "script/cibuild-org-builder $(pwd)/bitcoincore.org image"
-    deploy: "script/cibuild-org-builder $(pwd)/bitcoincore.org server"
 
