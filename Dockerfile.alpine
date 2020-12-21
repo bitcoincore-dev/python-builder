@@ -31,8 +31,8 @@ RUN CORE_RUBY_VERSION=$(curl https://raw.githubusercontent.com/bitcoin-core/bitc
 RUN echo ${CORE_RUBY_VERSION}
 RUN echo ${CORE_RUBY_VERSION}
 RUN echo ${CORE_RUBY_VERSION}
-RUN cd ruby-install-0.8.1/ && make && make install &&  ruby-install ruby 2.5.5 \
-&& ruby-install ruby 2.5.8
+RUN cd ruby-install-0.8.1/ && make && make install &&  ruby-install ruby 2.5.5
+#RUN cd ruby-install-0.8.1/ && make && make install &&  ruby-install ruby 2.5.8
 
 ## More to do
 RUN gem install ffi:1.14.1 --no-document
