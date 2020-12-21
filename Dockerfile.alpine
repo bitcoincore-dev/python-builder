@@ -27,6 +27,7 @@ RUN apk add --update ruby-dev build-base \
 #REF: https://pages.github.com/versions/
 #REF: https://github.com/github/opensource.guide/blob/34b3b5493594526a4b756712847ff567b8d5adc9/Gemfile.lock
 RUN gem sources --add https://rubygems.org/
+RUN gem install ${VERBOSE} --no-document gem_bench:1.0.2
 ENV JSON_GEM_VERSION 1.8.6
 RUN gem install ${VERBOSE} --no-document json:${JSON_GEM_VERSION}
 ENV JSON_GEM_VERSION 2.3.1

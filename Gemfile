@@ -13,8 +13,9 @@ gem "jekyll-github-metadata"
 gem "jekyll-theme-cayman"
 gem "liquid-c"
 
-#group :test do
-#  gem "rubocop", "~> 0.79"
-#  gem "rubocop-performance"
-#  gem "webmock"
-#end
+group :test do
+  gem "rubocop", "~> 0.79"
+  gem "rubocop-performance"
+  gem "webmock"
+  gem "gem_bench"
+end
