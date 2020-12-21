@@ -1,45 +1,57 @@
 ARG RUBY_VERSION=2.5.8
 ARG ALPINE_VERSION=alpine3.12
+
 FROM ruby:${RUBY_VERSION}-${ALPINE_VERSION} as base
+
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US.UTF-8
 ENV LC_ALL en_US.UTF-8
-RUN apk --update add --no-cache --virtual build_deps build-base ruby-dev libc-dev linux-headers
 
-RUN apk upgrade --update && apk add --no-cache git vim alpine-sdk build-base libc-dev linux-headers \
+RUN echo **********************************************************************
+RUN echo INSTALL
+RUN echo **********************************************************************
+
+RUN apk --update add --no-cache --virtual build_deps build-base ruby-dev libc-dev linux-headers
+RUN apk add --no-cache git vim alpine-sdk build-base libc-dev linux-headers \
 bash bash-completion sudo su-exec libatomic readline readline-dev \
 libxml2 libxml2-dev ncurses-terminfo-base ncurses-terminfo \
-libxslt libxslt-dev zlib-dev zlib
-
-RUN apk add --no-cache ruby ruby-dev yaml yaml-dev \
-libffi-dev nodejs ruby-io-console ruby-irb ruby-json ruby-rake
-
-
-##RUN echo install ruby-install
-##RUN wget -O ruby-install-0.8.1.tar.gz https://github.com/postmodern/ruby-install/archive/v0.8.1.tar.gz
-##RUN tar -xzvf ruby-install-0.8.1.tar.gz
-##RUN CORE_RUBY_VERSION=$(curl https://raw.githubusercontent.com/bitcoin-core/bitcoincore.org/master/.ruby-version) \
-##&& export CORE_RUBY_VERSION
-##RUN echo ${CORE_RUBY_VERSION}
-##RUN echo ${CORE_RUBY_VERSION}
-##RUN echo ${CORE_RUBY_VERSION}
-##RUN cd ruby-install-0.8.1/ && make && make install &&  ruby-install ruby 2.5.5
-
-FROM base as install
-
-#RUN apk add --update ruby-nokogiri
-
-#RUN gem install ruby-nokogiri:1.10.9 -- --use-system-libraries
-RUN apk add --update ruby-dev build-base \
+libxslt libxslt-dev zlib-dev zlib ruby ruby-dev yaml yaml-dev \
+libffi-dev nodejs ruby-io-console ruby-irb ruby-json ruby-rake ruby-dev build-base \
   libxml2-dev libxslt-dev pcre-dev libffi-dev \
   mariadb-dev postgresql-dev
+RUN apk add --no-cache build-base
+RUN apk add --update ruby-nokogiri
+RUN gem install nokogiri
 
-FROM install as copy
+RUN echo install ruby-install
+RUN wget -O ruby-install-0.8.1.tar.gz https://github.com/postmodern/ruby-install/archive/v0.8.1.tar.gz
+RUN tar -xzvf ruby-install-0.8.1.tar.gz
+RUN CORE_RUBY_VERSION=$(curl https://raw.githubusercontent.com/bitcoin-core/bitcoincore.org/master/.ruby-version) \
+&& export CORE_RUBY_VERSION
+RUN echo ${CORE_RUBY_VERSION}
+RUN echo ${CORE_RUBY_VERSION}
+RUN echo ${CORE_RUBY_VERSION}
+RUN cd ruby-install-0.8.1/ && make && make install &&  ruby-install ruby 2.5.5
 
-#COPY ./docs /src/gh/pages-gem
+## More to do
+RUN gem install ffi:1.14.1 --no-document
+
+
+RUN echo **********************************************************************
+RUN echo END INSTALL
+RUN echo **********************************************************************
+RUN echo **********************************************************************
+RUN echo END BASE
+RUN echo **********************************************************************
+FROM base as copy
+RUN echo **********************************************************************
+RUN echo BEGIN COPY
+RUN echo **********************************************************************
 COPY . /src/gh/pages-gem
-
-FROM copy as cleanup
+RUN echo **********************************************************************
+RUN echo END COPY
+RUN echo **********************************************************************
+FROM copy as bundle
 
 RUN bundle install --gemfile=/src/gh/pages-gem/Gemfile
 # one step to exclude .build_deps from docker cache
@@ -56,10 +68,7 @@ RUN apk update && apk add --no-cache --virtual .build_deps \
 
 
 
-RUN gem install ffi:1.14.1 --no-document
-
-
-FROM cleanup as done
+FROM bundle as run
 
 WORKDIR /src/site
 
