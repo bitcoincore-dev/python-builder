@@ -1,5 +1,7 @@
 DOCKER=docker
-TAG=gh-pages
+export DOCKER
+TAG=org-builder
+export TAG
 
 ifeq ($(SITE),)
     SITE   := .

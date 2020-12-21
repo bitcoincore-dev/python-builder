@@ -1,15 +1,15 @@
 ---
-title: "GitHub Pages Docker"
+title: "org-builder"
 layout: home
 permalink: /
-title: "GitHub Pages Docker"
-author_profile: true
+title: "bitcoincore-dev"
+author_profile: false
 
 ---
 
 <html>
 <head>
-  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="stylesheet" href="/assets/css/style.css">
 </head>
 </html>
 

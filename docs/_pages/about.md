@@ -1,12 +1,13 @@
 ---
-author_profile: true
+title: "org-builder / about"
+author_profile: false
 permalink: /about/
-title: "org-builder"
+title: "bitcoincore-dev"
 ---
 
 <html>
 <head>
-  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="stylesheet" href="/assets/css/style.css">
 </head>
 </html>
 
