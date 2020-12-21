@@ -12,6 +12,7 @@ gem "jemoji"
 gem "jekyll-github-metadata"
 gem "jekyll-theme-cayman"
 gem "liquid-c"
+gem "jekyll-redirect-from"
 
 #group :test do
 #  gem "rubocop", "~> 0.79"

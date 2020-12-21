@@ -6,9 +6,13 @@ export TAG
 ifeq ($(SITE),)
     SITE   := .
     export SITE
+    #TAG=org-builder
+    #export TAG
 else
     SITE   ?= $(SITE)
     export SITE
+    #TAG=${SITE}
+    #export TAG
 endif
 
 
