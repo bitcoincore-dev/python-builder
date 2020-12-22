@@ -20,23 +20,23 @@ Install [docker](https://docs.docker.com/get-docker/)
 Install [make](https://www.gnu.org/software/make/)
 
 
-then
+**then**
 
 ```
-git clone https://github.com/bitcoincore-dev/org-builder.git
+git clone https://github.com/bitcoincore-dev/org-builder.git ~
+git clone https://github.com/bitcoin-dot-org/Bitcoin.org.git ~
+
 cd org-builder
 
 make image
 make server
+
 OR
-SITE=. make image
-SITE=. make server
-OR
-SITE=<path_to_jekyll_project> make image
-SITE=<path_to_jekyll_project> make server
+
+SITE=~/Bitcoin.org make image
+SITE=~/Bitcoin.org make server
 ```
 
-### Docker Container compiles ruby-install 
 --
 
 ## License
