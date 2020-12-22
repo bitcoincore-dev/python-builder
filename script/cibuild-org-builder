@@ -3,5 +3,3 @@ set -e
 echo $1 $2
 SITE=$(pwd) make image
 SITE=$1 make $2
-
-SITE=$(pwd) make server
