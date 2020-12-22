@@ -1,18 +1,16 @@
 DOCKER=docker
 export DOCKER
-TAG=org-builder
-export TAG
 
 ifeq ($(SITE),)
     SITE   := .
     export SITE
-    #TAG=org-builder
-    #export TAG
+    TAG=org-builder
+    export TAG
 else
     SITE   ?= $(SITE)
     export SITE
-    #TAG=${SITE}
-    #export TAG
+    TAG=$(shell echo $(notdir $(SITE)) | awk '{print tolower($0)}')
+    export TAG
 endif
 
 
