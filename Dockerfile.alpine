@@ -2,8 +2,8 @@ ARG RUBY_VERSION=2.5.8
 ARG ALPINE_VERSION=alpine3.12
 
 FROM ruby:${RUBY_VERSION}-${ALPINE_VERSION} as base
-ARG YOUR_REPO=bitcoincore.org
-ARG YOUR_FORK=bitcoin-core
+ARG YOUR_REPO=Bitcoin.org
+ARG YOUR_FORK=bitcoin-dot-org
 
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US.UTF-8
@@ -23,14 +23,22 @@ libffi-dev nodejs ruby-io-console ruby-irb ruby-json ruby-rake ruby-dev build-ba
   mariadb-dev postgresql-dev
 RUN apk add --no-cache build-base
 RUN apk add --update ruby-nokogiri
-RUN gem install nokogiri
 
-RUN echo install ruby-install
-RUN wget -O ruby-install-0.8.1.tar.gz https://github.com/postmodern/ruby-install/archive/v0.8.1.tar.gz
-RUN tar -xzvf ruby-install-0.8.1.tar.gz
-RUN cd ruby-install-0.8.1/ && make && make install &&  ruby-install ruby \
-$(curl https://raw.githubusercontent.com/${YOUR_FORK}/${YOUR_REPO}/master/.ruby-version) &
-#RUN cd ruby-install-0.8.1/ && make && make install &&  ruby-install ruby 2.5.8
+##RUN echo install ruby-install
+##RUN wget -O ruby-install-0.8.1.tar.gz https://github.com/postmodern/ruby-install/archive/v0.8.1.tar.gz
+##RUN tar -xzvf ruby-install-0.8.1.tar.gz
+##RUN cd ruby-install-0.8.1/ && make && make install && ruby-install ruby \
+##$(curl https://raw.githubusercontent.com/${YOUR_FORK}/${YOUR_REPO}/master/.ruby-version)
+
+RUN echo 'gem: --no-document' >> .gemrc
+RUN echo 'verbose:   false'   >> .gemrc
+RUN echo 'benchmark: false'   >> .gemrc
+RUN echo 'backtrace: true'    >> .gemrc
+RUN bundle config --global jobs `expr $(nproc) - 1`
+
+RUN bundle install --gemfile=/src/gh/pages-gem/Gemfile &
+
+#RUN gem install nokogiri
 
 ## These are installed in a specific order ************************************
 RUN gem install rake:13.0.1
@@ -50,7 +58,8 @@ RUN gem install typhoeus:0.8.0
 RUN gem install yell:2.2.2
 RUN gem install html-proofer:2.1.0
 RUN gem install i18n:1.8.2
-RUN gem install sassc:2.3.0
+RUN echo Take a coffee break
+RUN gem install sassc:2.3.0 &
 RUN gem install eventmachine:1.2.7
 RUN gem install http_parser.rb:0.6.0
 RUN gem install em-websocket:0.5.2
@@ -79,6 +88,7 @@ RUN gem install therubyracer:0.12.3
 #RUN gem install 
 #RUN gem install 
 #RUN gem install 
+RUN bundle config list
 ## These are installed in a specific order ************************************
 
 

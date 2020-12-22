@@ -1,30 +1,29 @@
 DOCKER=docker
 export DOCKER
-
 ifeq ($(SITE),)
     SITE   := .
     export SITE
-    TAG=org-builder
-    export TAG
+    TAG        := org-builder
+    export     TAG
 else
-    SITE   ?= $(SITE)
-    export SITE
-    TAG=$(shell echo $(notdir $(SITE)) | awk '{print tolower($0)}')
-    export TAG
+    SITE       := $(SITE)
+    export     SITE
+    TAG        := $(shell echo $(notdir $(SITE)) | awk '{print tolower($0)}')
+    export     TAG
 endif
-
-
-
-.PHONY:
-	image image_alpine server shell
-
-# Build the docker image
-image:
+.PHONY: image image_alpine shell server clean
+# Build the docker image or create your own Dockerfile
+image:image_alpine
 	${DOCKER} build -t ${TAG} .
 image_alpine:
 	${DOCKER} build -t ${TAG} . -f Dockerfile.alpine
-
-# Produce a bash shell
+# make image or server first
+# use SITE= to point to the container
+# Example
+# SITE=~/Bitcoin.org make image
+# OR
+# SITE=~/Bitcoin.org make server
+# SITE=~/Bitcoin.org make shell
 shell:
 	${DOCKER} run --rm -it \
 		-p 4000:4000 \
@@ -34,7 +33,6 @@ shell:
 		-w /src/site \
 		${TAG} \
 		/bin/bash
-
 # Spawn a server. Specify the path to the SITE directory by
 # exposing it using `expose SITE="../path-to-jekyll-site"` prior to calling or
 # by prepending it to the make rule e.g.: `SITE=../path-to-site make server`
@@ -48,14 +46,15 @@ server: image
 		-v `realpath ${SITE}`:/src/site \
 		-w /src/site \
 		${TAG}
-	|| echo 'Image(s) for "gh-pages" already removed.'
+	|| echo 'Image(s) for "$(TAG)" does not exist.'
 #######################
 clean:
 	@echo 'clean'
-	@docker-compose -p gh-pages down --remove-orphans --rmi all 2>/dev/null \
-	&& echo 'Image(s) for "gh-pages" removed.' \
-	|| echo 'Image(s) for "gh-pages" already removed.'
+	bash -c 'docker rmi -f $(TAG)'
+	@docker rmi -f $(TAG) \
+	&& echo 'Image(1) for "$(TAG)" removed.' \
+	&& echo 'Image(2) for "$(TAG)" removed.' \
+	|| echo 'Image(3) for "$(TAG)" already removed.'
 #######################
-prune:
-	docker system prune -af
-#######################
+-include Makefile
+
