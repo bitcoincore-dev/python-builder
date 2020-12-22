@@ -11,6 +11,8 @@ title: "bitcoincore-dev"
 </head>
 </html>
 
+## Building environment for jekyll projects
+
 [![Build Status](https://travis-ci.org/bitcoincore-dev/org-builder.svg?branch=master)](https://travis-ci.org/bitcoincore-dev/org-builder)
 
 
@@ -33,6 +35,9 @@ OR
 SITE=<path_to_jekyll_project> make image
 SITE=<path_to_jekyll_project> make server
 ```
+
+### Docker Container compiles ruby-install 
+--
 
 ## License
 
