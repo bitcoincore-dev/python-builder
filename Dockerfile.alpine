@@ -26,12 +26,8 @@ RUN gem install nokogiri
 RUN echo install ruby-install
 RUN wget -O ruby-install-0.8.1.tar.gz https://github.com/postmodern/ruby-install/archive/v0.8.1.tar.gz
 RUN tar -xzvf ruby-install-0.8.1.tar.gz
-RUN CORE_RUBY_VERSION=$(curl https://raw.githubusercontent.com/bitcoin-core/bitcoincore.org/master/.ruby-version) \
-&& export CORE_RUBY_VERSION
-RUN echo ${CORE_RUBY_VERSION}
-RUN echo ${CORE_RUBY_VERSION}
-RUN echo ${CORE_RUBY_VERSION}
-RUN cd ruby-install-0.8.1/ && make && make install &&  ruby-install ruby 2.5.5
+RUN cd ruby-install-0.8.1/ && make && make install &&  ruby-install ruby \
+$(curl https://raw.githubusercontent.com/bitcoin-core/bitcoincore.org/master/.ruby-version) \
 #RUN cd ruby-install-0.8.1/ && make && make install &&  ruby-install ruby 2.5.8
 
 ## More to do
