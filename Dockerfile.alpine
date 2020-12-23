@@ -117,11 +117,25 @@ RUN rm -rf /root/src /tmp/* /usr/share/man /var/cache/apk/*
 RUN apk del build-base zlib-dev ruby-dev readline-dev yaml-dev libffi-dev libxml2-dev
 RUN apk search --update
 
-
-
 FROM bundle as run
 
 WORKDIR /src/site
+#REF: docs/setting-up-your-environment.md
+
+ARG PREVIEW_LANGS=en
+
+## Fast preview, takes less than 30 seconds
+#ENV ENABLED_PLUGINS=""
+ENV ENABLED_LANGS="${PREVIEW_LANGS}"
+
+## Fast build and tests, takes less than 50 seconds
+## Some tests may fail in fast mode; use -i to continue despite them
+#ENV ENABLED_PLUGINS=""
+ENV ENABLED_LANGS="${PREVIEW_LANGS}"
+
+## Slower (but still pretty fast) build and test
+ENV ENABLED_PLUGINS="events autocrossref"
+ENV ENABLED_LANGS="${PREVIEW_LANGS}"
 
 #CMD ["bundle","install","--user" ,"--system"]
 CMD ["bundle","install","--verbose"]
