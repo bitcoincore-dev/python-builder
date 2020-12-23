@@ -36,10 +36,6 @@ RUN echo 'benchmark: false'   >> .gemrc
 RUN echo 'backtrace: true'    >> .gemrc
 RUN bundle config --global jobs `expr $(nproc) - 1`
 
-RUN bundle install --gemfile=/src/gh/pages-gem/Gemfile &
-
-#RUN gem install nokogiri
-
 ## These are installed in a specific order ************************************
 RUN gem install rake:13.0.1
 RUN gem install RedCloth:4.3.2
@@ -59,7 +55,7 @@ RUN gem install yell:2.2.2
 RUN gem install html-proofer:2.1.0
 RUN gem install i18n:1.8.2
 RUN echo Take a coffee break
-RUN gem install sassc:2.3.0 &
+RUN gem install sassc:2.3.0
 RUN gem install eventmachine:1.2.7
 RUN gem install http_parser.rb:0.6.0
 RUN gem install em-websocket:0.5.2

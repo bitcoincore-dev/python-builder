@@ -8,7 +8,7 @@ ifeq ($(SITE),)
 else
     SITE       := $(SITE)
     export     SITE
-    TAG        := $(shell echo $(notdir $(SITE)) | awk '{print tolower($0)}')
+    TAG        := $(shell echo $(notdir $(SITE)) | awk '{print tolower($$0)}')
     export     TAG
 endif
 .PHONY: image image_alpine shell server clean
