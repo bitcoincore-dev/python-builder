@@ -7,7 +7,7 @@ ARG HOST_USER=${HOST_USER:-nodummy}
 ENV HOST_USER=${HOST_USER:-nodummy}
 
 USER root
-RUN apk add ${VERBOSE} ${NO_CACHE} shadow
+RUN apk add ${VERBOSE} ${NO_CACHE} shadow 
 
 RUN [ "${HOST_USER}" == "root" ] || \
     #(adduser -S -h /home/${HOST_USER} -D -u ${HOST_UID} ${HOST_USER} \
@@ -23,6 +23,7 @@ RUN apk upgrade --no-cache \
     build-base \
     python3 \
     python3-dev \
+    py3-setuptools \
     postgresql-dev \
     bash \
     git \
@@ -30,13 +31,14 @@ RUN apk upgrade --no-cache \
   && rm -rf /var/cache/* \
   && rm -rf /root/.cache/*
 
+RUN apk add libxml2
+RUN apk add libxslt
+RUN pip install requests_html
+
 RUN cd /usr/bin \
   && ln -sf easy_install-3.5 easy_install \
   && ln -sf python3 python \
   && ln -sf pip3 pip
 
-RUN rm -rf /usr/lib/ruby/gems/*/cache/*.gem
 RUN rm -rf /root/src /tmp/* /usr/share/man /var/cache/apk/*
-RUN apk search --update
-
 WORKDIR /src/site
